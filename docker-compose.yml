@@ -1,0 +1,21 @@
+version: '3.6'  
+services:
+  frontend:
+    image: brunogamacatao/notepad_frontend
+    ports:
+      - "8080:3000"
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:5000
+    depends_on: 
+      - backend
+  backend:
+    image: brunogamacatao/notepad_backend
+    environment:
+      - SERVER_PORT=5000
+      - DATABASE_URL=mongodb://banco_de_dados/notepad
+    ports:
+      - "5000:5000"
+    depends_on: 
+      - banco_de_dados
+  banco_de_dados:
+    image: mongo

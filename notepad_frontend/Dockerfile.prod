@@ -1,0 +1,19 @@
+# Builder Step
+FROM node:14-alpine3.10 AS builder
+
+# 1. Primeiro a parte mais demorada - o package.json
+WORKDIR /app
+COPY package.json /app
+RUN npm install
+
+# 2. Copia o restante dos arquivos
+COPY . /app
+
+# 3. Faz o build da aplicação
+ENV REACT_APP_BACKEND_URL http://192.168.1.12:5000
+RUN npm run build
+
+# Server step
+FROM nginx AS server
+COPY --from=builder /app/build /usr/share/nginx/html
+COPY default.conf /etc/nginx/conf.d/default.conf
